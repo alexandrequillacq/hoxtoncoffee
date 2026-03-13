@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hoxton Coffee</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff;
+      --bg2: #f5f4f0;
+      --text: #1a1a18;
+      --muted: #888780;
+      --border: rgba(0,0,0,0.12);
+      --border2: rgba(0,0,0,0.22);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1a18;
+        --bg2: #242421;
+        --text: #f0efe9;
+        --muted: #888780;
+        --border: rgba(255,255,255,0.1);
+        --border2: rgba(255,255,255,0.2);
+      }
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem 4rem; }
+    .root { width: 100%; max-width: 600px; }
+    .header { margin-bottom: 2rem; }
+    h1 { font-size: 20px; font-weight: 500; }
+    .subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .action-card { padding: 1.25rem; background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius); margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .action-date { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .action-status { font-size: 15px; font-weight: 500; }
+    .action-status.done { font-weight: 400; color: var(--muted); }
+    .btn-primary { padding: 10px 20px; border-radius: var(--radius-sm); border: none; background: var(--text); color: var(--bg); cursor: pointer; font-size: 14px; font-weight: 500; font-family: inherit; white-space: nowrap; transition: opacity 0.15s; }
+    .btn-primary:hover { opacity: 0.8; }
+    .btn-primary:disabled { opacity: 0.4; cursor: default; }
+    .btn-cancel { padding: 10px 20px; border-radius: var(--radius-sm); border: 0.5px solid var(--border2); background: transparent; color: var(--muted); cursor: pointer; font-size: 14px; font-family: inherit; white-space: nowrap; transition: background 0.15s; }
+    .btn-cancel:hover { background: var(--bg2); }
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 2rem; }
+    .metric { background: var(--bg2); border-radius: var(--radius-sm); padding: 1rem; }
+    .metric-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .metric-value { font-size: 22px; font-weight: 500; }
+    .metric-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .progress-section { margin-bottom: 2rem; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .progress-track { height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--text); border-radius: 2px; transition: width 0.4s ease; }
+    .divider { border: none; border-top: 0.5px solid var(--border); margin: 1.5rem 0; }
+    .section-label { font-size: 13px; color: var(--muted); margin-bottom: 1rem; }
+    .chart-wrap { position: relative; width: 100%; height: 180px; margin-bottom: 2rem; }
+    .log-list { display: flex; flex-direction: column; gap: 6px; }
+    .log-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 8px 12px; background: var(--bg2); border-radius: var(--radius-sm); }
+    .log-item .log-ppc { color: var(--muted); font-size: 12px; }
+    .empty-log { font-size: 13px; color: var(--muted); }
+    .loader { text-align: center; color: var(--muted); font-size: 13px; padding: 2rem 0; }
+  </style>
+</head>
+<body>
+<div class="root">
+  <div class="header">
+    <h1>Hoxton Coffee</h1>
+    <p class="subtitle">Abonnement depuis le 13 mars 2026 · 162 € / an · café à 5 €</p>
+  </div>
+
+  <div id="app"><div class="loader">Chargement…</div></div>
+</div>
+
+<script>
+// ─── Config ───────────────────────────────────────────────────────────────────
+const JSONBIN_API_KEY = '$2a$10$F9cJu5zueMH6oKgGD6OAWuftnqldmcmP9vwSrzf41jpZal7WX3ZKW';
+const BIN_ID = '69b41468b7ec241ddc664f09';
+const TOTAL       = 162;
+const COFFEE_PRICE = 5;
+const BREAKEVEN   = 33;
+const START       = new Date('2026-03-13T00:00:00');
+const MAX_WEEKS   = 52;
+
+// ─── JSONBin helpers ──────────────────────────────────────────────────────────
+async function readBin() {
+  const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+  });
+  const d = await r.json();
+  return d.record?.entries || [];
+}
+
+async function writeBin(entries) {
+  await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
+    body: JSON.stringify({ entries })
+  });
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+
+function formatDate(str) {
+  const [y, m, d] = str.split('-');
+  const months = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc'];
+  return d + ' ' + months[+m - 1] + ' ' + y;
+}
+
+function longDate(d) {
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function getWeekIndex(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return Math.max(0, Math.min(Math.floor((d - START) / (7*24*3600*1000)), MAX_WEEKS-1));
+}
+
+function getCurrentWeekIndex() {
+  return Math.max(0, Math.min(Math.floor((new Date() - START) / (7*24*3600*1000)), MAX_WEEKS-1));
+}
+
+function getWeeklyCounts(entries) {
+  const arr = new Array(MAX_WEEKS).fill(0);
+  entries.forEach(e => arr[getWeekIndex(e)]++);
+  return arr;
+}
+
+function getMonthlyAvg(entries) {
+  const now = new Date();
+  const months = (now.getFullYear() - START.getFullYear()) * 12 + (now.getMonth() - START.getMonth()) + 1;
+  return (entries.length / months).toFixed(1).replace('.', ',');
+}
+
+// ─── Render ───────────────────────────────────────────────────────────────────
+let chart = null;
+
+function render(entries) {
+  const count   = entries.length;
+  const today   = todayStr();
+  const hasToday = entries.includes(today);
+  const pct     = Math.min(Math.round((count / BREAKEVEN) * 100), 100);
+  const ppc     = count > 0 ? (TOTAL / count).toFixed(2).replace('.', ',') + ' €' : '—';
+  const avg     = count > 0 ? getMonthlyAvg(entries) : '0';
+  const wc      = getWeeklyCounts(entries);
+  const visWeeks = Math.min(getCurrentWeekIndex() + 3, 12);
+
+  document.getElementById('app').innerHTML = `
+    <div class="action-card">
+      <div>
+        <div class="action-date">${longDate(new Date())}</div>
+        <div class="action-status${hasToday ? ' done' : ''}" id="status-text">
+          ${hasToday ? 'Café enregistré ✓' : 'Pas encore de café aujourd\'hui'}
+        </div>
+      </div>
+      <div id="btn-wrap">
+        ${hasToday
+          ? '<button class="btn-cancel" id="btn-action">Annuler</button>'
+          : '<button class="btn-primary" id="btn-action">+ Café aujourd\'hui</button>'}
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">Prix par café</div>
+        <div class="metric-value">${ppc}</div>
+        <div class="metric-sub">coût actuel</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Moy. par mois</div>
+        <div class="metric-value">${avg}</div>
+        <div class="metric-sub">depuis le début</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Seuil rentable</div>
+        <div class="metric-value">33</div>
+        <div class="metric-sub">cafés · à 5 €</div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-label">
+        <span>Progression vers 33 cafés</span>
+        <span>${pct} %</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${pct}%"></div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="section-label">Cafés par semaine</div>
+    <div class="chart-wrap"><canvas id="weekChart"></canvas></div>
+
+    <div class="section-label">Historique</div>
+    <div class="log-list">
+      ${count === 0
+        ? '<div class="empty-log">Aucun café enregistré</div>'
+        : [...entries].reverse().map((e, i) => {
+            const n = count - i;
+            const p = (TOTAL / n).toFixed(2).replace('.', ',');
+            return `<div class="log-item"><span>☕ ${formatDate(e)}</span><span class="log-ppc">${n} café${n>1?'s':''} · ${p} € / café</span></div>`;
+          }).join('')}
+    </div>
+  `;
+
+  // Chart
+  if (chart) { chart.destroy(); chart = null; }
+  const ctx = document.getElementById('weekChart')?.getContext('2d');
+  if (ctx) {
+    chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: Array.from({length: visWeeks}, (_, i) => 'S' + (i+1)),
+        datasets: [{ data: wc.slice(0, visWeeks), backgroundColor: '#2C2C2A', borderRadius: 4, borderSkipped: false }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y + ' café' + (c.parsed.y > 1 ? 's' : '') } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#888780' }, border: { display: false } },
+          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0, font: { size: 11 }, color: '#888780' }, grid: { color: 'rgba(136,135,128,0.15)' }, border: { display: false } }
+        }
+      }
+    });
+  }
+
+  // Button handler
+  document.getElementById('btn-action')?.addEventListener('click', async () => {
+    const btn = document.getElementById('btn-action');
+    btn.disabled = true;
+    btn.textContent = '…';
+    let updated;
+    if (hasToday) {
+      updated = entries.filter(e => e !== today);
+    } else {
+      updated = [...entries, today].sort();
+    }
+    await writeBin(updated);
+    render(updated);
+  });
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+(async () => {
+  if (!BIN_ID) {
+    document.getElementById('app').innerHTML = `
+      <div class="loader">
+        BIN_ID non configuré — suis le README ci-dessous pour créer le bin JSONBin.
+      </div>`;
+    return;
+  }
+  try {
+    const entries = await readBin();
+    render(entries);
+  } catch(e) {
+    document.getElementById('app').innerHTML = `<div class="loader">Erreur de chargement. Vérifie la clé API et le BIN_ID.</div>`;
+  }
+})();
+</script>
+</body>
+</html>
