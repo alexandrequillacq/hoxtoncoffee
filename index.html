@@ -7,112 +7,162 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #ffffff;
-      --bg2: #f5f4f0;
-      --text: #1a1a18;
-      --muted: #888780;
-      --border: rgba(0,0,0,0.12);
-      --border2: rgba(0,0,0,0.22);
-      --radius: 12px;
-      --radius-sm: 8px;
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #e8f0fe 0%, #f5e6ff 40%, #fde8f0 100%);
+      display: flex;
+      justify-content: center;
+      padding: 3rem 1rem 5rem;
     }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #1a1a18;
-        --bg2: #242421;
-        --text: #f0efe9;
-        --muted: #888780;
-        --border: rgba(255,255,255,0.1);
-        --border2: rgba(255,255,255,0.2);
-      }
+
+    .root { width: 100%; max-width: 580px; }
+
+    .header { margin-bottom: 2.5rem; padding: 0 0.25rem; }
+    h1 { font-size: 28px; font-weight: 600; color: #1a1a2e; letter-spacing: -0.5px; }
+    .subtitle { font-size: 13px; color: rgba(60,60,80,0.55); margin-top: 5px; font-weight: 400; }
+
+    /* Glass card */
+    .glass {
+      background: rgba(255,255,255,0.62);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.85);
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(100,100,160,0.08), 0 1px 2px rgba(255,255,255,0.9) inset;
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem 4rem; }
-    .root { width: 100%; max-width: 600px; }
-    .header { margin-bottom: 2rem; }
-    h1 { font-size: 20px; font-weight: 500; }
-    .subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; }
-    .action-card { padding: 1.25rem; background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius); margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-    .action-date { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
-    .action-status { font-size: 15px; font-weight: 500; }
-    .action-status.done { font-weight: 400; color: var(--muted); }
-    .btn-primary { padding: 10px 20px; border-radius: var(--radius-sm); border: none; background: var(--text); color: var(--bg); cursor: pointer; font-size: 14px; font-weight: 500; font-family: inherit; white-space: nowrap; transition: opacity 0.15s; }
-    .btn-primary:hover { opacity: 0.8; }
-    .btn-primary:disabled { opacity: 0.4; cursor: default; }
-    .btn-cancel { padding: 10px 20px; border-radius: var(--radius-sm); border: 0.5px solid var(--border2); background: transparent; color: var(--muted); cursor: pointer; font-size: 14px; font-family: inherit; white-space: nowrap; transition: background 0.15s; }
-    .btn-cancel:hover { background: var(--bg2); }
-    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 2rem; }
-    .metric { background: var(--bg2); border-radius: var(--radius-sm); padding: 1rem; }
-    .metric-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-    .metric-value { font-size: 22px; font-weight: 500; }
-    .metric-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
-    .progress-section { margin-bottom: 2rem; }
-    .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-    .progress-track { height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
-    .progress-fill { height: 100%; background: var(--text); border-radius: 2px; transition: width 0.4s ease; }
-    .divider { border: none; border-top: 0.5px solid var(--border); margin: 1.5rem 0; }
-    .section-label { font-size: 13px; color: var(--muted); margin-bottom: 1rem; }
-    .chart-wrap { position: relative; width: 100%; height: 180px; margin-bottom: 2rem; }
-    .log-list { display: flex; flex-direction: column; gap: 6px; }
-    .log-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 8px 12px; background: var(--bg2); border-radius: var(--radius-sm); }
-    .log-item .log-ppc { color: var(--muted); font-size: 12px; }
-    .empty-log { font-size: 13px; color: var(--muted); }
-    .loader { text-align: center; color: var(--muted); font-size: 13px; padding: 2rem 0; }
+
+    .action-card { padding: 1.5rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .action-date { font-size: 12px; color: rgba(60,60,80,0.5); margin-bottom: 5px; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; }
+    .action-status { font-size: 16px; font-weight: 600; color: #1a1a2e; }
+    .action-status.done { font-weight: 400; color: rgba(60,60,80,0.5); }
+
+    .btn-primary {
+      padding: 11px 22px;
+      border-radius: 50px;
+      border: none;
+      background: #1a1a2e;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: -0.1px;
+    }
+    .btn-primary:hover { opacity: 0.82; }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:disabled { opacity: 0.35; cursor: default; }
+
+    .btn-cancel {
+      padding: 11px 22px;
+      border-radius: 50px;
+      border: 1px solid rgba(100,100,140,0.2);
+      background: rgba(255,255,255,0.5);
+      color: rgba(60,60,80,0.6);
+      cursor: pointer;
+      font-size: 14px;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-cancel:hover { background: rgba(255,255,255,0.8); }
+
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 1.25rem; }
+    .metric {
+      background: rgba(255,255,255,0.62);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.85);
+      border-radius: 16px;
+      padding: 1.1rem 1rem;
+      box-shadow: 0 2px 12px rgba(100,100,160,0.06);
+    }
+    .metric-label { font-size: 11px; color: rgba(60,60,80,0.45); margin-bottom: 7px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+    .metric-value { font-size: 21px; font-weight: 600; color: #1a1a2e; letter-spacing: -0.5px; }
+    .metric-sub { font-size: 11px; color: rgba(60,60,80,0.4); margin-top: 4px; }
+
+    .chart-card { padding: 1.5rem; margin-bottom: 1.25rem; }
+    .section-label { font-size: 11px; color: rgba(60,60,80,0.45); margin-bottom: 1rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    .progress-wrap { margin-bottom: 1.25rem; padding: 1.25rem 1.5rem; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: rgba(60,60,80,0.5); margin-bottom: 10px; font-weight: 500; }
+    .progress-track { height: 5px; background: rgba(100,100,160,0.1); border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #6c63ff, #c76bf5); border-radius: 3px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+
+    .chart-wrap { position: relative; width: 100%; height: 170px; }
+
+    .log-card { padding: 1.5rem; }
+    .log-list { display: flex; flex-direction: column; gap: 7px; }
+    .log-item {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; padding: 9px 13px;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 12px;
+    }
+    .log-item .log-name { color: #1a1a2e; font-weight: 500; }
+    .log-item .log-ppc { color: rgba(60,60,80,0.45); font-size: 12px; }
+    .empty-log { font-size: 13px; color: rgba(60,60,80,0.4); }
+    .loader { text-align: center; color: rgba(60,60,80,0.4); font-size: 13px; padding: 3rem 0; }
   </style>
 </head>
 <body>
 <div class="root">
   <div class="header">
-    <h1>Hoxton Coffee</h1>
+    <h1>Hoxton Coffee ☕</h1>
     <p class="subtitle">Abonnement depuis le 13 mars 2026 · 162 € / an · café à 5 €</p>
   </div>
-
   <div id="app"><div class="loader">Chargement…</div></div>
 </div>
 
 <script>
-// ─── Config ───────────────────────────────────────────────────────────────────
 const JSONBIN_API_KEY = '$2a$10$F9cJu5zueMH6oKgGD6OAWuftnqldmcmP9vwSrzf41jpZal7WX3ZKW';
-const BIN_ID = '69b41468b7ec241ddc664f09';
-const TOTAL       = 162;
-const COFFEE_PRICE = 5;
-const BREAKEVEN   = 33;
-const START       = new Date('2026-03-13T00:00:00');
-const MAX_WEEKS   = 52;
+const BIN_ID  = '69b41468b7ec241ddc664f09';
+const TOTAL   = 162;
+const BREAKEVEN = 33;
+const START   = new Date('2026-03-13T00:00:00');
+const MAX_WEEKS = 52;
 
-// ─── JSONBin helpers ──────────────────────────────────────────────────────────
 async function readBin() {
   const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+    headers: { 'X-Master-Key': JSONBIN_API_KEY, 'X-Bin-Meta': 'false' }
   });
+  if (!r.ok) throw new Error('read failed');
   const d = await r.json();
-  return d.record?.entries || [];
+  return Array.isArray(d.entries) ? d.entries : [];
 }
 
 async function writeBin(entries) {
-  await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+  const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
     body: JSON.stringify({ entries })
   });
+  if (!r.ok) throw new Error('write failed');
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-function todayStr() { return new Date().toISOString().slice(0, 10); }
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
 
 function formatDate(str) {
-  const [y, m, d] = str.split('-');
+  const [y,m,d] = str.split('-');
   const months = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc'];
-  return d + ' ' + months[+m - 1] + ' ' + y;
+  return d + ' ' + months[+m-1] + ' ' + y;
 }
 
-function longDate(d) {
+function longDate() {
+  const now = new Date();
   const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  return now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
 }
 
-function getWeekIndex(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
+function getWeekIndex(str) {
+  const d = new Date(str + 'T00:00:00');
   return Math.max(0, Math.min(Math.floor((d - START) / (7*24*3600*1000)), MAX_WEEKS-1));
 }
 
@@ -128,133 +178,123 @@ function getWeeklyCounts(entries) {
 
 function getMonthlyAvg(entries) {
   const now = new Date();
-  const months = (now.getFullYear() - START.getFullYear()) * 12 + (now.getMonth() - START.getMonth()) + 1;
-  return (entries.length / months).toFixed(1).replace('.', ',');
+  const months = (now.getFullYear()-START.getFullYear())*12 + (now.getMonth()-START.getMonth()) + 1;
+  return (entries.length / months).toFixed(1).replace('.',',');
 }
 
-// ─── Render ───────────────────────────────────────────────────────────────────
 let chart = null;
 
 function render(entries) {
-  const count   = entries.length;
-  const today   = todayStr();
+  const count    = entries.length;
+  const today    = todayStr();
   const hasToday = entries.includes(today);
-  const pct     = Math.min(Math.round((count / BREAKEVEN) * 100), 100);
-  const ppc     = count > 0 ? (TOTAL / count).toFixed(2).replace('.', ',') + ' €' : '—';
-  const avg     = count > 0 ? getMonthlyAvg(entries) : '0';
-  const wc      = getWeeklyCounts(entries);
+  const pct      = Math.min(Math.round((count/BREAKEVEN)*100), 100);
+  const ppc      = count > 0 ? (TOTAL/count).toFixed(2).replace('.',',') + ' €' : '—';
+  const avg      = count > 0 ? getMonthlyAvg(entries) : '0';
+  const wc       = getWeeklyCounts(entries);
   const visWeeks = Math.min(getCurrentWeekIndex() + 3, 12);
 
   document.getElementById('app').innerHTML = `
-    <div class="action-card">
+    <div class="glass action-card">
       <div>
-        <div class="action-date">${longDate(new Date())}</div>
-        <div class="action-status${hasToday ? ' done' : ''}" id="status-text">
-          ${hasToday ? 'Café enregistré ✓' : 'Pas encore de café aujourd\'hui'}
-        </div>
+        <div class="action-date">${longDate()}</div>
+        <div class="action-status${hasToday?' done':''}">${hasToday ? 'Café enregistré ✓' : 'Pas encore de café aujourd\'hui'}</div>
       </div>
-      <div id="btn-wrap">
-        ${hasToday
-          ? '<button class="btn-cancel" id="btn-action">Annuler</button>'
-          : '<button class="btn-primary" id="btn-action">+ Café aujourd\'hui</button>'}
-      </div>
+      ${hasToday
+        ? '<button class="btn-cancel" id="btn-action">Annuler</button>'
+        : '<button class="btn-primary" id="btn-action">+ Café aujourd\'hui</button>'}
     </div>
 
     <div class="metrics">
       <div class="metric">
-        <div class="metric-label">Prix par café</div>
+        <div class="metric-label">Prix / café</div>
         <div class="metric-value">${ppc}</div>
         <div class="metric-sub">coût actuel</div>
       </div>
       <div class="metric">
-        <div class="metric-label">Moy. par mois</div>
+        <div class="metric-label">Moy. / mois</div>
         <div class="metric-value">${avg}</div>
         <div class="metric-sub">depuis le début</div>
       </div>
       <div class="metric">
-        <div class="metric-label">Seuil rentable</div>
+        <div class="metric-label">Seuil</div>
         <div class="metric-value">33</div>
-        <div class="metric-sub">cafés · à 5 €</div>
+        <div class="metric-sub">cafés à 5 €</div>
       </div>
     </div>
 
-    <div class="progress-section">
+    <div class="glass progress-wrap">
       <div class="progress-label">
         <span>Progression vers 33 cafés</span>
-        <span>${pct} %</span>
+        <span>${count} / 33 · ${pct} %</span>
       </div>
       <div class="progress-track">
         <div class="progress-fill" style="width:${pct}%"></div>
       </div>
     </div>
 
-    <hr class="divider">
-    <div class="section-label">Cafés par semaine</div>
-    <div class="chart-wrap"><canvas id="weekChart"></canvas></div>
+    <div class="glass chart-card">
+      <div class="section-label">Cafés par semaine</div>
+      <div class="chart-wrap"><canvas id="weekChart"></canvas></div>
+    </div>
 
-    <div class="section-label">Historique</div>
-    <div class="log-list">
-      ${count === 0
-        ? '<div class="empty-log">Aucun café enregistré</div>'
-        : [...entries].reverse().map((e, i) => {
-            const n = count - i;
-            const p = (TOTAL / n).toFixed(2).replace('.', ',');
-            return `<div class="log-item"><span>☕ ${formatDate(e)}</span><span class="log-ppc">${n} café${n>1?'s':''} · ${p} € / café</span></div>`;
-          }).join('')}
+    <div class="glass log-card" style="margin-top:1.25rem">
+      <div class="section-label">Historique</div>
+      <div class="log-list">
+        ${count === 0
+          ? '<div class="empty-log">Aucun café enregistré</div>'
+          : [...entries].reverse().map((e,i) => {
+              const n = count - i;
+              const p = (TOTAL/n).toFixed(2).replace('.',',');
+              return `<div class="log-item"><span class="log-name">☕ ${formatDate(e)}</span><span class="log-ppc">${n} café${n>1?'s':''} · ${p} € / café</span></div>`;
+            }).join('')}
+      </div>
     </div>
   `;
 
-  // Chart
   if (chart) { chart.destroy(); chart = null; }
   const ctx = document.getElementById('weekChart')?.getContext('2d');
   if (ctx) {
     chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: Array.from({length: visWeeks}, (_, i) => 'S' + (i+1)),
-        datasets: [{ data: wc.slice(0, visWeeks), backgroundColor: '#2C2C2A', borderRadius: 4, borderSkipped: false }]
+        labels: Array.from({length: visWeeks}, (_,i) => 'S'+(i+1)),
+        datasets: [{ data: wc.slice(0, visWeeks), backgroundColor: 'rgba(108,99,255,0.7)', borderRadius: 6, borderSkipped: false }]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y + ' café' + (c.parsed.y > 1 ? 's' : '') } } },
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y + ' café'+(c.parsed.y>1?'s':'') } } },
         scales: {
-          x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#888780' }, border: { display: false } },
-          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0, font: { size: 11 }, color: '#888780' }, grid: { color: 'rgba(136,135,128,0.15)' }, border: { display: false } }
+          x: { grid: { display: false }, ticks: { font: { size: 11 }, color: 'rgba(60,60,80,0.4)' }, border: { display: false } },
+          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0, font: { size: 11 }, color: 'rgba(60,60,80,0.4)' }, grid: { color: 'rgba(100,100,160,0.07)' }, border: { display: false } }
         }
       }
     });
   }
 
-  // Button handler
   document.getElementById('btn-action')?.addEventListener('click', async () => {
     const btn = document.getElementById('btn-action');
     btn.disabled = true;
     btn.textContent = '…';
-    let updated;
-    if (hasToday) {
-      updated = entries.filter(e => e !== today);
-    } else {
-      updated = [...entries, today].sort();
+    const updated = hasToday
+      ? entries.filter(e => e !== today)
+      : [...entries, today].sort();
+    try {
+      await writeBin(updated);
+      render(updated);
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = 'Erreur, réessaie';
     }
-    await writeBin(updated);
-    render(updated);
   });
 }
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
 (async () => {
-  if (!BIN_ID) {
-    document.getElementById('app').innerHTML = `
-      <div class="loader">
-        BIN_ID non configuré — suis le README ci-dessous pour créer le bin JSONBin.
-      </div>`;
-    return;
-  }
   try {
     const entries = await readBin();
     render(entries);
   } catch(e) {
-    document.getElementById('app').innerHTML = `<div class="loader">Erreur de chargement. Vérifie la clé API et le BIN_ID.</div>`;
+    document.getElementById('app').innerHTML = `<div class="loader">Erreur de chargement. Vérifie la connexion.</div>`;
   }
 })();
 </script>
