@@ -113,7 +113,7 @@
 <div class="root">
   <div class="header">
     <h1>Hoxton Coffee ☕</h1>
-    <p class="subtitle">Abonnement depuis le 13 mars 2026 · 162 € / an · café à 5 €</p>
+    <p class="subtitle">Abonnement depuis le 13 mars 2026 · 162 € / an · café à 6 €</p>
   </div>
   <div id="app"><div class="loader">Chargement…</div></div>
 </div>
@@ -122,7 +122,7 @@
 const JSONBIN_API_KEY = '$2a$10$0fweQ3w4itcFYajbrV7OXu6LC6PUOOnCQnSDTG.VlS9LOLSMDQ0uC';
 const BIN_ID  = '69b41468b7ec241ddc664f09';
 const TOTAL   = 162;
-const BREAKEVEN = 33;
+const BREAKEVEN = 27;
 const START   = new Date('2026-03-13T00:00:00');
 const MAX_WEEKS = 52;
 
@@ -218,15 +218,15 @@ function render(entries) {
       </div>
       <div class="metric">
         <div class="metric-label">Seuil</div>
-        <div class="metric-value">33</div>
-        <div class="metric-sub">cafés à 5 €</div>
+        <div class="metric-value">27</div>
+        <div class="metric-sub">cafés à 6 €</div>
       </div>
     </div>
 
     <div class="glass progress-wrap">
       <div class="progress-label">
-        <span>Progression vers 33 cafés</span>
-        <span>${count} / 33 · ${pct} %</span>
+        <span>Progression vers 27 cafés</span>
+        <span>${count} / 27 · ${pct} %</span>
       </div>
       <div class="progress-track">
         <div class="progress-fill" style="width:${pct}%"></div>
@@ -258,7 +258,7 @@ function render(entries) {
     chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: Array.from({length: visWeeks}, (_,i) => 'S'+(i+1)),
+        labels: Array.from({length: visWeeks}, (_,i) => { const d = new Date(START.getTime() + i*7*24*3600*1000); const mo = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc']; return 'S'+(i+1)+' '+mo[d.getMonth()]; }),
         datasets: [{ data: wc.slice(0, visWeeks), backgroundColor: 'rgba(108,99,255,0.7)', borderRadius: 6, borderSkipped: false }]
       },
       options: {
