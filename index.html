@@ -125,6 +125,7 @@ const TOTAL   = 162;
 const BREAKEVEN = 27;
 const START   = new Date('2026-03-13T00:00:00');
 const MAX_WEEKS = 52;
+const CACHE_KEY = 'hoxton_entries';
 
 async function readBin() {
   const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
@@ -281,6 +282,7 @@ function render(entries) {
       : [...entries, today].sort();
     try {
       await writeBin(updated);
+      saveCache(updated);
       render(updated);
     } catch(e) {
       btn.disabled = false;
@@ -289,12 +291,26 @@ function render(entries) {
   });
 }
 
+function saveCache(entries) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(entries)); } catch(e) {}
+}
+
+function loadCache() {
+  try { const d = localStorage.getItem(CACHE_KEY); return d ? JSON.parse(d) : null; } catch(e) { return null; }
+}
+
 (async () => {
+  const cached = loadCache();
+  if (cached) render(cached);
+
   try {
     const entries = await readBin();
+    saveCache(entries);
     render(entries);
   } catch(e) {
-    document.getElementById('app').innerHTML = `<div class="loader">Erreur de chargement. Vérifie la connexion.</div>`;
+    if (!cached) {
+      document.getElementById('app').innerHTML = `<div class="loader">Erreur de chargement. Vérifie la connexion.</div>`;
+    }
   }
 })();
 </script>
