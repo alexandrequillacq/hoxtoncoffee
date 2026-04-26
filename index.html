@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hoxton Coffee</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-2 0 34 36'%3E%3Crect width='34' height='36' rx='8' fill='%23EED7C5'/%3E%3Cpath d='M16.5259 1.37423C7.60125 1.37423 0.667139 6.4498 0.0375358 13.9142C-0.226413 17.0477 0.859652 20.3858 4.01857 21.5736C4.42902 21.7274 5.13127 21.9465 5.92312 21.9465C6.38806 21.9465 6.85299 21.8594 7.29008 21.6499C8.41974 21.1087 9.05418 19.7962 8.58804 18.8191C8.26839 18.1507 7.61699 17.8093 6.94017 18.0914C6.04298 18.4643 6.0563 19.3991 6.3251 20.0274C6.45949 20.3737 6.37716 20.6655 6.06962 20.8132C5.83473 20.9258 5.49329 20.9283 5.12885 20.7999C3.38775 19.9124 2.65281 17.2112 2.58985 15.464C2.5729 15.0027 2.58743 14.5402 2.62739 14.0801C3.19645 7.33125 9.12804 2.58501 16.4242 2.58501C23.0919 2.58501 27.8987 6.56241 27.3127 13.5159C27.0015 17.2124 25.3694 20.3822 23.081 22.6827C20.9222 24.8536 17.9243 26.0486 14.9507 26.0486H14.309C11.9782 26.0486 11.7954 25.5837 11.9128 24.1853C11.9383 23.8886 12.0278 23.2166 12.3535 22.0458L14.9252 11.9056C15.9278 8.19574 16.3431 7.22712 16.992 6.03451L16.2559 5.37343L16.0597 5.53688C14.1503 7.13147 12.8161 9.40047 11.9806 12.4746L9.3932 22.4829C8.47664 25.8416 7.87247 26.1818 5.68944 26.1818H5.43154L5.25477 27.2606H14.4361C24.0387 27.2606 29.5345 20.0674 30.0975 13.3827C30.7307 5.87832 24.6732 1.37181 16.5247 1.37181L16.5259 1.37423Z' fill='%23272729'/%3E%3C/svg%3E" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -11,7 +12,7 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
       min-height: 100vh;
-      background: linear-gradient(135deg, #e8f0fe 0%, #f5e6ff 40%, #fde8f0 100%);
+      background: linear-gradient(135deg, #EEE2DF 0%, #EED7C5 55%, #C89F9C 100%);
       display: flex;
       justify-content: center;
       padding: 3rem 1rem 5rem;
@@ -20,48 +21,48 @@
     .root { width: 100%; max-width: 580px; }
 
     .header { margin-bottom: 2.5rem; padding: 0 0.25rem; }
-    h1 { font-size: 28px; font-weight: 600; color: #1a1a2e; letter-spacing: -0.5px; }
-    .subtitle { font-size: 13px; color: rgba(60,60,80,0.55); margin-top: 5px; font-weight: 400; }
+    .header svg { display: block; }
+    .subtitle { font-size: 13px; color: rgba(80,45,40,0.5); margin-top: 10px; font-weight: 400; }
 
     /* Glass card */
     .glass {
-      background: rgba(255,255,255,0.62);
+      background: rgba(255,248,245,0.65);
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.8);
       border-radius: 20px;
-      box-shadow: 0 4px 24px rgba(100,100,160,0.08), 0 1px 2px rgba(255,255,255,0.9) inset;
+      box-shadow: 0 4px 24px rgba(179,106,94,0.1), 0 1px 2px rgba(255,255,255,0.9) inset;
     }
 
     .action-card { padding: 1.5rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-    .action-date { font-size: 12px; color: rgba(60,60,80,0.5); margin-bottom: 5px; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; }
-    .action-status { font-size: 16px; font-weight: 600; color: #1a1a2e; }
-    .action-status.done { font-weight: 400; color: rgba(60,60,80,0.5); }
+    .action-date { font-size: 12px; color: rgba(80,45,40,0.5); margin-bottom: 5px; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; }
+    .action-status { font-size: 16px; font-weight: 600; color: #2a1a18; }
+    .action-status.done { font-weight: 400; color: rgba(80,45,40,0.5); }
 
     .btn-primary {
-      padding: 11px 22px;
+      padding: 12px 24px;
       border-radius: 50px;
       border: none;
-      background: #1a1a2e;
+      background: #B36A5E;
       color: #fff;
       cursor: pointer;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
       font-family: inherit;
       white-space: nowrap;
       transition: opacity 0.15s, transform 0.1s;
-      letter-spacing: -0.1px;
+      letter-spacing: 0.01em;
     }
-    .btn-primary:hover { opacity: 0.82; }
-    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:active { transform: scale(0.96); }
     .btn-primary:disabled { opacity: 0.35; cursor: default; }
 
     .btn-cancel {
       padding: 11px 22px;
       border-radius: 50px;
-      border: 1px solid rgba(100,100,140,0.2);
+      border: 1px solid rgba(179,106,94,0.25);
       background: rgba(255,255,255,0.5);
-      color: rgba(60,60,80,0.6);
+      color: rgba(80,45,40,0.6);
       cursor: pointer;
       font-size: 14px;
       font-family: inherit;
@@ -72,25 +73,20 @@
 
     .metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 1.25rem; }
     .metric {
-      background: rgba(255,255,255,0.62);
+      background: rgba(255,248,245,0.65);
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.8);
       border-radius: 16px;
       padding: 1.1rem 1rem;
-      box-shadow: 0 2px 12px rgba(100,100,160,0.06);
+      box-shadow: 0 2px 12px rgba(179,106,94,0.08);
     }
-    .metric-label { font-size: 11px; color: rgba(60,60,80,0.45); margin-bottom: 7px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
-    .metric-value { font-size: 21px; font-weight: 600; color: #1a1a2e; letter-spacing: -0.5px; }
-    .metric-sub { font-size: 11px; color: rgba(60,60,80,0.4); margin-top: 4px; }
+    .metric-label { font-size: 11px; color: rgba(80,45,40,0.45); margin-bottom: 7px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+    .metric-value { font-size: 21px; font-weight: 600; color: #2a1a18; letter-spacing: -0.5px; }
+    .metric-sub { font-size: 11px; color: rgba(80,45,40,0.4); margin-top: 4px; }
 
     .chart-card { padding: 1.5rem; margin-bottom: 1.25rem; }
-    .section-label { font-size: 11px; color: rgba(60,60,80,0.45); margin-bottom: 1rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
-
-    .progress-wrap { margin-bottom: 1.25rem; padding: 1.25rem 1.5rem; }
-    .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: rgba(60,60,80,0.5); margin-bottom: 10px; font-weight: 500; }
-    .progress-track { height: 5px; background: rgba(100,100,160,0.1); border-radius: 3px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, #6c63ff, #c76bf5); border-radius: 3px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+    .section-label { font-size: 11px; color: rgba(80,45,40,0.45); margin-bottom: 1rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
 
     .chart-wrap { position: relative; width: 100%; height: 170px; }
 
@@ -99,21 +95,35 @@
     .log-item {
       display: flex; justify-content: space-between; align-items: center;
       font-size: 13px; padding: 9px 13px;
-      background: rgba(255,255,255,0.5);
-      border: 1px solid rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.45);
+      border: 1px solid rgba(255,255,255,0.75);
       border-radius: 12px;
     }
-    .log-item .log-name { color: #1a1a2e; font-weight: 500; }
-    .log-item .log-ppc { color: rgba(60,60,80,0.45); font-size: 12px; }
-    .empty-log { font-size: 13px; color: rgba(60,60,80,0.4); }
-    .loader { text-align: center; color: rgba(60,60,80,0.4); font-size: 13px; padding: 3rem 0; }
+    .log-item .log-name { color: #2a1a18; font-weight: 500; }
+    .log-item .log-ppc { color: rgba(80,45,40,0.45); font-size: 12px; }
+    .empty-log { font-size: 13px; color: rgba(80,45,40,0.4); }
+    .loader { text-align: center; color: rgba(80,45,40,0.4); font-size: 13px; padding: 3rem 0; }
+
+    .code-card {
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .code-label { font-size: 11px; color: rgba(80,45,40,0.45); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+    .code-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #B36A5E;
+      letter-spacing: 0.1em;
+      font-variant-numeric: tabular-nums;
+      font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    }
   </style>
 </head>
 <body>
 <div class="root">
   <div class="header">
-    <h1>Hoxton Coffee ☕</h1>
-    <p class="subtitle">Abonnement depuis le 13 mars 2026 · 162 € / an · café à 6 €</p>
+    <svg data-testid="disloyalty-logo-svg" width="162" height="30" viewBox="0 0 194 36" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2495_43626)"><path d="M188.8 0.0302698C184.631 0.428615 179.558 4.65543 175.23 11.3353C174.96 11.7469 174.691 12.1731 174.427 12.6078L173.274 12.649C173.449 11.6404 173.548 10.5592 173.548 9.56513C173.548 6.94743 172.714 4.29704 169.963 4.29704C168.476 4.29704 167.381 5.40006 166.614 6.60357C166.65 5.82868 166.684 5.07194 166.718 4.32852C166.718 4.32852 164.066 4.86611 162.443 4.86611H153.134C148.859 4.86611 147.983 4.29583 147.983 4.29583L145.201 10.38L146.101 10.7759C146.101 10.7759 148.368 7.56856 149.693 6.44133C150.654 6.14348 152.008 6.01635 155.223 6.01635H156.085L153.743 13.35L135.462 14.0087L137.208 8.36888C137.804 6.44617 138.334 6.08294 139.594 6.08294H141.442L141.74 4.85642H131.949L131.585 6.08294H133.137C134.761 6.08294 135.026 6.67985 134.562 8.13763L132.717 14.108L123.565 14.4385L125.649 7.97175C126.18 6.31541 126.544 5.45334 127.273 5.45334C127.67 5.45334 128.069 5.58531 128.466 6.08294C128.929 6.71254 129.227 6.94501 129.758 6.94501C130.221 6.94501 130.487 6.58057 130.487 6.18222C130.487 5.35405 129.161 4.45929 127.173 4.45929C124.887 4.45929 123.074 4.54525 120.938 6.8651C120.11 7.76471 117.267 11.638 114.974 14.7485L105.488 15.0899C107.461 12.3184 110.459 8.11946 110.78 7.70659C111.642 6.61326 112.238 6.08294 113.365 6.08294H114.21L114.386 4.85642H106.771L106.643 6.08294H107.565C108.891 6.08294 109.223 6.61326 108.792 7.87247C108.524 8.62557 105.766 12.6526 104.024 15.142L101.642 15.2279L99.1153 7.67269C98.8502 6.91111 98.9168 6.08173 100.176 6.08173H101.278L101.43 4.85521H93.4477L93.2491 6.08173H94.2516C95.4116 6.08173 96.0085 6.57936 96.2736 7.34094L99.0621 15.3199L93.1365 15.533C93.168 15.1529 93.1837 14.7739 93.1837 14.3985C93.1837 8.46696 89.4727 4.45687 84.4686 4.45687C78.7465 4.45687 73.6031 9.99859 72.9432 16.2607L64.0936 16.5804L66.6363 8.36767C67.2332 6.44496 67.7635 6.08173 69.0227 6.08173H70.8704L71.1682 4.85521H61.3779L61.0134 6.08173H62.5656C64.1893 6.08173 64.4545 6.67864 63.9907 8.13641L61.35 16.6796L54.9099 16.9121L55.0673 21.2782L59.9843 21.1014L59.2191 23.5787C58.5568 25.666 57.9598 26.0305 56.5021 26.0305H55.4451L55.1872 27.257H71.3571L73.1478 27.9023L74.3659 23.7445C74.7255 24.3366 75.1529 24.8887 75.6565 25.4009C77.9098 27.7534 80.7927 27.6541 81.4223 27.6541C86.6795 27.6541 90.3529 24.1586 92.0759 19.9439L99.9556 19.6594L98.9265 24.2736C98.6952 25.2677 98.3295 26.0305 96.7725 26.0305H95.5859L95.3692 27.257H103.95L104.182 26.0305H102.865C101.772 26.0305 101.208 25.8646 101.572 24.1744L102.4 20.4294C102.475 20.0916 102.55 19.8107 102.63 19.5625L111.574 19.2404C107.048 24.9468 102.933 31.956 99.9689 31.956C98.3622 31.956 97.5873 30.4801 98.1903 30.0248C98.654 29.6047 98.9761 30.2428 99.5028 30.2428C100.433 30.2428 100.287 29.2112 99.9544 28.9836C98.8332 28.2171 96.8221 29.486 97.4372 31.5746C97.8864 33.1014 100.606 34.9817 104.118 31.307C106.157 29.1736 108.722 25.3924 113.394 19.1751L118.12 19.0043H119.422L117.7 24.1405C117.137 25.7968 116.274 26.0293 115.015 26.0293H114.044L113.849 27.2558H122.566L122.734 26.0293H121.245C120.615 26.0293 120.317 25.6321 120.317 25.1018C120.317 24.7047 120.483 24.0412 120.748 23.1791L122.141 18.859L131.352 18.5273L129.792 23.5787C129.129 25.666 128.532 26.0305 127.075 26.0305H126.018L125.76 27.257H141.758L143.548 27.9023L145.356 21.7334L144.534 21.4283C144.534 21.4283 142.448 24.7725 141.786 25.3694C141.52 25.6019 141.222 25.8004 140.626 25.8997C139.996 25.999 136.349 26.0317 134.195 26.0317H132.869C132.14 26.0317 131.809 25.7992 132.041 25.0703L134.097 18.4292L152.335 17.7718L150.788 22.6185C149.992 25.1369 149.395 26.0317 147.407 26.0317H146.211L145.997 27.2582H156.079L156.337 26.0317H154.743C152.887 26.0317 152.656 25.3028 153.318 23.1815L155.073 17.6737L170.373 17.1216C170.141 17.8941 169.903 18.5915 169.698 19.1714L167.703 24.3075C167.339 25.3016 166.908 26.0305 165.384 26.0305H164.273L163.99 27.257H172.965L173.28 26.0305H171.561C170.468 26.0305 169.771 25.8319 170.334 24.2083L171.361 21.2927C171.522 20.8326 171.686 20.3931 171.85 19.9621C172.329 18.9147 172.852 17.934 173.388 17.0126L181.228 16.7305L181.07 12.3644L176.328 12.5352C176.343 12.5122 176.36 12.4892 176.376 12.4674C180.53 6.57815 185.673 2.53779 189.474 2.17334C191.082 2.01957 192.746 2.44214 192.624 4.01372C192.575 4.63243 192.288 4.84068 191.955 5.08163C191.66 5.29593 191.292 5.5623 191.249 6.10958C191.203 6.69922 191.608 6.9668 192.03 6.92685C192.536 6.87842 193.029 6.40743 193.35 5.66522C193.52 5.26203 193.63 4.79467 193.667 4.31521C193.883 1.54011 191.837 -0.262738 188.802 0.0266375L188.8 0.0302698ZM80.2272 8.30713C81.6523 6.88205 83.0774 5.92069 85.0982 5.92069C88.7765 5.92069 90.5987 8.70427 90.5987 12.2506C90.5987 13.3779 90.4728 14.5208 90.2391 15.6432L75.9266 16.159C76.6857 13.3536 78.2077 10.3255 80.226 8.30713H80.2272ZM71.3813 25.373C71.1161 25.6055 70.8183 25.8041 70.2214 25.9033C69.5918 26.0026 65.773 26.0353 63.619 26.0353H62.2932C61.5643 26.0353 61.2326 25.8028 61.465 25.074L62.7243 21.0058L73.1611 20.6292C73.2786 21.1862 73.4324 21.7177 73.6249 22.2262C72.9638 23.2542 71.8366 24.9614 71.3813 25.3718V25.373ZM80.6571 26.3671C78.3445 26.3671 75.7098 24.6865 75.4156 20.5493L88.6978 20.0698C86.8804 23.684 83.9383 26.3659 80.6558 26.3659L80.6571 26.3671ZM121.971 7.8761C122.501 7.37968 122.866 7.1799 123.097 7.1799C123.362 7.1799 123.395 7.57704 123.263 7.97538L120.989 14.5342L116.732 14.6879C118.792 11.8256 121.079 8.697 121.97 7.8761H121.971ZM156.478 13.2556L158.782 6.02119H159.479C160.572 6.02119 163.153 6.17496 164.082 6.5394C164.546 7.50076 165.381 11.5254 165.381 11.5254L166.387 11.4225C165.207 7.81919 167.775 6.09626 169.068 6.09626C170.261 6.09626 171.534 7.69085 171.534 10.541C171.534 11.2493 171.474 11.9831 171.373 12.718L156.479 13.2556H156.478Z" fill="#272729"></path><path d="M56.1921 7.86641C56.2248 6.93896 55.6618 4.45323 51.8842 4.45323C48.1065 4.45323 45.4889 7.3034 45.4889 10.8159C45.4889 12.5061 46.2177 14.4942 47.1791 16.814C48.3717 19.6969 50.2944 22.3812 50.2944 26.987C50.2944 31.1956 46.782 34.8401 41.6458 34.8401C37.7689 34.8401 35.0181 31.9245 34.9854 29.0078C34.9527 26.8865 36.2119 25.4626 37.0727 25.396C37.8343 25.4287 38.2993 26.1249 38.4639 26.987C38.6298 27.7825 39.3914 28.3455 40.021 28.3455C40.9484 28.3455 41.4461 27.4507 41.4461 26.6891C41.4461 25.4626 40.021 24.1041 38.0995 24.1041C37.0267 24.1041 36.0254 24.4952 35.213 25.1696C35.1113 24.8233 35.1452 24.3669 35.3038 23.7821L39.4192 8.53839C39.9169 6.74886 40.1808 6.08657 42.1362 6.08657H43.1496H43.1569C43.1654 6.08657 43.1714 6.08657 43.1799 6.08657H43.6146L43.8846 4.86126H34.0059L33.7685 6.08778H35.0604C36.7737 6.08778 37.241 6.74402 36.8233 8.31319L32.691 23.5847C32.1933 25.3742 31.9294 26.0365 29.974 26.0365L28.2946 26.0389L28.1094 27.263H33.6935C33.3956 27.9847 33.2273 28.7971 33.2273 29.6713C33.2273 32.6873 35.8777 36 41.4122 36C48.1392 36 53.0429 31.261 53.0429 25.0982C53.0429 21.4864 51.3526 18.7694 49.9942 15.8866C48.9008 13.5667 48.1053 11.7445 48.0387 9.8884C47.9395 7.17142 49.6951 5.41459 51.7498 5.41459C53.3068 5.41459 54.0357 6.14348 53.6713 6.93896C53.5054 7.3034 53.3068 7.70053 53.3068 8.23085C53.3068 8.79386 53.8372 9.42347 54.4994 9.42347C55.5262 9.42347 56.1897 8.5287 56.1897 7.86641H56.1921Z" fill="#272729"></path><path d="M16.5259 1.37423C7.60125 1.37423 0.667139 6.4498 0.0375358 13.9142C-0.226413 17.0477 0.859652 20.3858 4.01857 21.5736C4.42902 21.7274 5.13127 21.9465 5.92312 21.9465C6.38806 21.9465 6.85299 21.8594 7.29008 21.6499C8.41974 21.1087 9.05418 19.7962 8.58804 18.8191C8.26839 18.1507 7.61699 17.8093 6.94017 18.0914C6.04298 18.4643 6.0563 19.3991 6.3251 20.0274C6.45949 20.3737 6.37716 20.6655 6.06962 20.8132C5.83473 20.9258 5.49329 20.9283 5.12885 20.7999C3.38775 19.9124 2.65281 17.2112 2.58985 15.464C2.5729 15.0027 2.58743 14.5402 2.62739 14.0801C3.19645 7.33125 9.12804 2.58501 16.4242 2.58501C23.0919 2.58501 27.8987 6.56241 27.3127 13.5159C27.0015 17.2124 25.3694 20.3822 23.081 22.6827C20.9222 24.8536 17.9243 26.0486 14.9507 26.0486H14.309C11.9782 26.0486 11.7954 25.5837 11.9128 24.1853C11.9383 23.8886 12.0278 23.2166 12.3535 22.0458L14.9252 11.9056C15.9278 8.19574 16.3431 7.22712 16.992 6.03451L16.2559 5.37343L16.0597 5.53688C14.1503 7.13147 12.8161 9.40047 11.9806 12.4746L9.3932 22.4829C8.47664 25.8416 7.87247 26.1818 5.68944 26.1818H5.43154L5.25477 27.2606H14.4361C24.0387 27.2606 29.5345 20.0674 30.0975 13.3827C30.7307 5.87832 24.6732 1.37181 16.5247 1.37181L16.5259 1.37423Z" fill="#272729"></path></g><defs><clipPath id="clip0_2495_43626"><rect width="193.681" height="36" fill="#272729" transform="translate(0.672119)"></rect></clipPath></defs></svg>
+    <p class="subtitle">Abonnement depuis le 13 mars 2026 · 162 € / an</p>
   </div>
   <div id="app"><div class="loader">Chargement…</div></div>
 </div>
@@ -122,7 +132,6 @@
 const JSONBIN_API_KEY = '$2a$10$0fweQ3w4itcFYajbrV7OXu6LC6PUOOnCQnSDTG.VlS9LOLSMDQ0uC';
 const BIN_ID  = '69b41468b7ec241ddc664f09';
 const TOTAL   = 162;
-const BREAKEVEN = 27;
 const START   = new Date('2026-03-13T00:00:00');
 const MAX_WEEKS = 52;
 const CACHE_KEY = 'hoxton_entries';
@@ -183,13 +192,23 @@ function getMonthlyAvg(entries) {
   return (entries.length / months).toFixed(1).replace('.',',');
 }
 
+function getWeekLabels(visWeeks) {
+  const mo = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc'];
+  let prevMonth = -1;
+  return Array.from({length: visWeeks}, (_, i) => {
+    const d = new Date(START.getTime() + i * 7 * 24 * 3600 * 1000);
+    const m = d.getMonth();
+    if (m !== prevMonth) { prevMonth = m; return mo[m]; }
+    return '';
+  });
+}
+
 let chart = null;
 
 function render(entries) {
   const count    = entries.length;
   const today    = todayStr();
   const hasToday = entries.includes(today);
-  const pct      = Math.min(Math.round((count/BREAKEVEN)*100), 100);
   const ppc      = count > 0 ? (TOTAL/count).toFixed(2).replace('.',',') + ' €' : '—';
   const avg      = count > 0 ? getMonthlyAvg(entries) : '0';
   const wc       = getWeeklyCounts(entries);
@@ -203,7 +222,12 @@ function render(entries) {
       </div>
       ${hasToday
         ? '<button class="btn-cancel" id="btn-action">Annuler</button>'
-        : '<button class="btn-primary" id="btn-action">+ Café aujourd\'hui</button>'}
+        : '<button class="btn-primary" id="btn-action">J\'ai pris mon café</button>'}
+    </div>
+
+    <div class="glass code-card">
+      <div class="code-label">Code d'accès</div>
+      <div class="code-value">836-389-2032</div>
     </div>
 
     <div class="metrics">
@@ -213,24 +237,14 @@ function render(entries) {
         <div class="metric-sub">coût actuel</div>
       </div>
       <div class="metric">
-        <div class="metric-label">Moy. / mois</div>
-        <div class="metric-value">${avg}</div>
+        <div class="metric-label">Total cafés</div>
+        <div class="metric-value">${count}</div>
         <div class="metric-sub">depuis le début</div>
       </div>
       <div class="metric">
-        <div class="metric-label">Seuil</div>
-        <div class="metric-value">27</div>
-        <div class="metric-sub">cafés à 6 €</div>
-      </div>
-    </div>
-
-    <div class="glass progress-wrap">
-      <div class="progress-label">
-        <span>Progression vers 27 cafés</span>
-        <span>${count} / 27 · ${pct} %</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" style="width:${pct}%"></div>
+        <div class="metric-label">Moy. / mois</div>
+        <div class="metric-value">${avg}</div>
+        <div class="metric-sub">cafés</div>
       </div>
     </div>
 
@@ -259,15 +273,15 @@ function render(entries) {
     chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: Array.from({length: visWeeks}, (_,i) => { const d = new Date(START.getTime() + i*7*24*3600*1000); const mo = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc']; return 'S'+(i+1)+' '+mo[d.getMonth()]; }),
-        datasets: [{ data: wc.slice(0, visWeeks), backgroundColor: 'rgba(108,99,255,0.7)', borderRadius: 6, borderSkipped: false }]
+        labels: getWeekLabels(visWeeks),
+        datasets: [{ data: wc.slice(0, visWeeks), backgroundColor: '#CA7C5C', borderRadius: 6, borderSkipped: false }]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
         plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y + ' café'+(c.parsed.y>1?'s':'') } } },
         scales: {
-          x: { grid: { display: false }, ticks: { font: { size: 11 }, color: 'rgba(60,60,80,0.4)' }, border: { display: false } },
-          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0, font: { size: 11 }, color: 'rgba(60,60,80,0.4)' }, grid: { color: 'rgba(100,100,160,0.07)' }, border: { display: false } }
+          x: { grid: { display: false }, ticks: { font: { size: 11 }, color: 'rgba(80,45,40,0.45)' }, border: { display: false } },
+          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0, font: { size: 11 }, color: 'rgba(80,45,40,0.45)' }, grid: { color: 'rgba(179,106,94,0.08)' }, border: { display: false } }
         }
       }
     });
