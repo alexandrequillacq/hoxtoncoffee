@@ -107,7 +107,26 @@
     .code-card {
       padding: 1.25rem 1.5rem;
       margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
     }
+    .btn-open-app {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #B36A5E;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-open-app:hover { opacity: 0.85; }
+    .btn-open-app:active { transform: scale(0.94); }
     .code-label { font-size: 11px; color: rgba(80,45,40,0.45); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
     .code-value {
       font-size: 24px;
@@ -226,8 +245,13 @@ function render(entries) {
     </div>
 
     <div class="glass code-card">
-      <div class="code-label">Code d'accès</div>
-      <div class="code-value">836-389-2032</div>
+      <div>
+        <div class="code-label">Code d'accès</div>
+        <div class="code-value">836-389-2032</div>
+      </div>
+      <a class="btn-open-app" href="https://dis-loyalty.com/to-app/" aria-label="Ouvrir l'appli Dis-loyalty" title="Ouvrir l'appli">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+      </a>
     </div>
 
     <div class="metrics">
